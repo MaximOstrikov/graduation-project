@@ -1,11 +1,15 @@
 var welcomeChecker = 1;
 function sliderBackgroundBody() {
     if (welcomeChecker === 1) {
-        setTimeout(function(){ $('#welcome').animate({opacity:1}, {duration:1000}).fadeOut(2000, function () {
-            $(this).remove();
-        });
+        setTimeout(function(){
+            $('#welcome').animate({opacity:1}, {duration:1000}).fadeOut(2000, function () {
+                $(this).remove()
+            });
         welcomeChecker++;
-        setTimeout(sliderBackgroundBody, 2200);},300)
+        setTimeout(sliderBackgroundBody, 2200);},300);
+        setTimeout(function () {
+            $('#task').animate({opacity:1}, {duration:1000}).removeClass('displayNone');
+        }, 3600)
     } else {
         window.currBg = window.currBg + 1;
         if (!window.currBg || window.currBg > 8) window.currBg = 1;
@@ -18,3 +22,4 @@ function sliderBackgroundBody() {
 $(document).ready(function() {
     sliderBackgroundBody();
 });
+
