@@ -3,6 +3,11 @@
 @scrollHover: rgba(97, 156, 144, 0.68);
 @trackColor: rgba(82, 233, 223, 0.31);
 @taskColor: rgba(216, 216, 216, 0.78);
+@allBtnColor: #555455;
+@editBtnHover: rgb(229, 185, 55);
+@doneBtnHover: rgb(40, 168, 40);
+@removeBtnHover: rgb(220, 65, 38);
+@disabledColor: @taskColor;
 
 ::-webkit-scrollbar {
     width: 10px;
@@ -50,25 +55,124 @@ body,html {
     }
 
     #task {
-
-        #newTask {
+        #taskList, #addList {
             width: 260px;
             height: 330px;
             background: @taskColor;
-            margin: 7% 7% 7% 15%;
+            margin: 7% 7% 7% 12%;
             border-radius: 10px;
             border: 3px solid #777;
+            .rowBtn {
+                margin: 5px 0 0 0;
+            }
+            .taskName {
+                h3 {
+                    margin: 8px 0;
+                    text-align: center;
+                    font-size: 30px;
+                    border-bottom: 2px solid #777;
+                }
+            }
+            .taskDiscription {
+                width: 235px;
+                height: 220px;
+                textarea {
+                    margin: 0 10px 5px 10px;
+                    width: 235px;
+                    height: 220px;
+                    resize: none;
+                    background: @taskColor;
+                    outline: none;
+                }
+                p {
+                    width: 225px;
+                    height: 220px;
+                    margin: 0 10px 5px 10px;
+                    word-break: break-all;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+            #edit, #done, #remove {
+                width: 80px;
+                height: 40px;
+                outline: none;
+                color: #bebebe;
+                background: @allBtnColor;
+                &:hover {
+                    color: @allBtnColor;
+                    border: 2px solid @allBtnColor;
+                }
+            }
+            #edit {
+                margin-left: 3px;
+                border: 2px solid @editBtnHover;
+                border-radius: 20px 0 0 20px;
+                &:hover {
+                    background: @editBtnHover;
+                }
+            }
+            #done {
+                border: 2px solid @doneBtnHover;
+                &:hover {
+                    background: @doneBtnHover;
+                }
+            }
+            #remove {
+                margin-right: 3px;
+                border: 2px solid @removeBtnHover;
+                border-radius: 0 20px 20px 0;
+                &:hover {
+                    background: @removeBtnHover;
+                }
+            }
         }
-        .taskName {
-            h3 {
+        #addList {
+            width: 260px;
+            height: 330px;
+            background: @taskColor;
+            margin: 7% 7% 7% 12%;
+            border-radius: 10px;
+            border: 3px solid #777;
+            text-align: center;
+            color: #555;
+            outline: none;
+            #addListBtn {
+                width: 240px;
+                height: 40px;
+                border-radius: 30px;
+                margin: 5px 0 0 0;
+                color: #bebebe;
+                background: @allBtnColor;
+                border: 2px solid #4da5c8;
+                outline: none;
+                &:hover {
+                    background: #4da5c8;
+                    color: @allBtnColor;
+                    border: 2px solid @allBtnColor;
+                }
+            }
+            h1 {
+                margin:0;
                 text-align: center;
-                font-size: 30px;
-                border-bottom: 2px solid #777;
+                font-size: 20px;
+            }
+            .taskName {
+                input {
+                    margin: 7px 0 7px 0;
+                    width: 230px;
+                    height: 35px;
+                    outline: none;
+                    background: @taskColor;
+                    border: 2px solid #777;
+                    padding: 0 5px 0 5px;
+                    border-radius: 5px;
+                    text-overflow: ellipsis;
+                }
             }
         }
     }
 }
-
 
 .noneOpacity {
     opacity: 0;
