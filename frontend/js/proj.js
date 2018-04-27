@@ -61,3 +61,4 @@ $(document).on('click', '#remove', (function () {
 }));
 
 
+// trim() обрезает пробелы
