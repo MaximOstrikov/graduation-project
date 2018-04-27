@@ -55,18 +55,25 @@ body,html {
     }
 
     #task {
+        .activeTask {
+            background: @taskColor;
+            border: 3px solid #777;
+        }
+        .doneTask {
+            border: 3px solid #007800;
+            background: rgba(186, 216, 186, 0.78);
+        }
         #taskList, #addList {
             width: 260px;
             height: 330px;
-            background: @taskColor;
             margin: 7% 7% 7% 12%;
             border-radius: 10px;
-            border: 3px solid #777;
             .rowBtn {
                 margin: 5px 0 0 0;
             }
             .taskName {
                 h3 {
+                    height: 33px;
                     margin: 8px 0;
                     text-align: center;
                     font-size: 30px;

@@ -27,22 +27,34 @@ $(document).ready(function () {
 
 // add new task
 
-$('#addListBtn').click(function() {
+$('#addListBtn').on('click', (function() {
     var newTaskName = $('#addName').val(), newTaskDiscription = $('#addDiscription').val();
     $('#addName, #addDiscription').val('');
 
     $('#allTask').prepend('<div class="col-md-4 col-sm-6">\n' +
-    '             <div id="taskList">\n' +
-    '                 <div class="taskName"> <h3>'+ newTaskName +'</h3> </div>\n' +
-    '                 <div class="taskDiscription"> <p>'+ newTaskDiscription +'</p></div>\n' +
-    '                 <div class="rowBtn">\n' +
-    '                    <button id="edit">Edit</button>\n' +
-    '                    <button id="done">Done</button>\n' +
-    '                    <button id="remove">Remove</button>\n' +
-    '                 </div>\n' +
-    '             </div>\n' +
-    '         </div>');
+        '             <div id="taskList" class="activeTask">\n' +
+        '                 <div class="taskName"> <h3>'+ newTaskName +'</h3> </div>\n' +
+        '                 <div class="taskDiscription"> <p>'+ newTaskDiscription +'</p></div>\n' +
+        '                 <div class="rowBtn">\n' +
+        '                    <button id="edit">Edit</button>\n' +
+        '                    <button id="done">Done</button>\n' +
+        '                    <button id="remove">Remove</button>\n' +
+        '                 </div>\n' +
+        '             </div>\n' +
+        '         </div>');
 
 
-});
+}));
+
+// done task
+
+$('#done').on('click', (function () {
+   $(this).closest('#taskList').addClass('doneTask').removeClass('activeClass');
+    console.log('hi')
+}))
+
+// edit task
+// $('#edit').on('click', function() {
+//     console.log($(this).clos)
+// })
 
