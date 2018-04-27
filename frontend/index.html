@@ -5,6 +5,7 @@
     <title>Just ToDo</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="css/style.less" rel="stylesheet/less" type="text/css">
+    <!--<link rel="stylesheet" href="css/style.css">-->
     <link href="https://fonts.googleapis.com/css?family=Bangers|Permanent+Marker|Nixie+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Arapey" rel="stylesheet">
     <script src="js/less.js"></script>
@@ -30,18 +31,22 @@
 
          <div id="allTask">
 
-             <div class="col-md-4 col-sm-6">
+             <div id="containerList" class="col-md-4 col-sm-6" >
                  <div id="taskList" class="activeTask">
                      <div class="taskName"> <h3 id="he">New Task</h3> </div>
                      <div class="taskDiscription"> <p>Discription</p></div>
                      <div class="rowBtn">
                         <button id="edit">Edit</button>
                         <button id="done">Done</button>
-                        <button id="remove">Remove</button>
+                        <button id="remove" class="removeNotFinished">Remove</button>
                      </div>
                  </div>
              </div>
+
+
+
          </div>
+
      </div>
  </div>
 
