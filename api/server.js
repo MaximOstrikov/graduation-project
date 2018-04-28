@@ -26,7 +26,7 @@ app.post('/api/tasks', (req, res) => {
 		task = req.body;
 
 	task.id = shortId.generate();
-	task.status = 'New';
+	task.taskStatus = 'New';
 
 	data.push(task);
 	fs.writeFileSync(dataFile, JSON.stringify(data));

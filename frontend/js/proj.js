@@ -23,42 +23,133 @@ function sliderBackgroundBody() {
 }
 $(document).ready(function () {
     sliderBackgroundBody();
+
+    // loading tasks
+    $.ajax({
+        url: 'http://localhost:9999/api/tasks',
+        method: 'GET',
+        success: function(response) {
+            for (var i = 0; i<response.tasks.length; i++){
+                (response.tasks[i].taskStatus === 'New') ? (taskChecker = 0) : (taskChecker = 1);
+                (taskChecker === 0) ? (listStyle = 'activeTask',
+                    $('#allTask').prepend('<div id="'+response.tasks[i].id +'" class="col-md-4 col-sm-6">\n' +
+                    '             <div id="taskList" class="'+ listStyle +'">\n' +
+                    '                 <div class="taskName"> <h3>'+response.tasks[i].title+'</h3> </div>\n' +
+                    '                 <div class="taskDescription"> <p>'+response.tasks[i].description+'</p></div>\n' +
+                    '                 <div class="rowBtn">\n' +
+                    '                    <button id="edit">Edit</button>\n' +
+                    '                    <button id="done">Done</button>\n' +
+                    '                    <button id="remove" class="removeNotFinished">Remove</button>\n' +
+                    '                 </div>\n' +
+                    '             </div>\n' +
+                    '         </div>')) : (listStyle = 'doneTask',
+                    $('#allTask').prepend('<div id="'+response.tasks[i].id +'" class="col-md-4 col-sm-6">\n' +
+                    '             <div id="taskList" class="'+ listStyle +'">\n' +
+                    '                 <div class="taskName"> <h3>'+response.tasks[i].title+'</h3> </div>\n' +
+                    '                 <div class="taskDescription"> <p>'+response.tasks[i].description+'</p></div>\n' +
+                    '                 <div class="rowBtn">\n' +
+                    '                    <button id="remove" class="removeFinished"><h1>Remove</h1></button>\n' +
+                    '                </div>\n' +
+                    '             </div>\n' +
+                    '         </div>'));
+            }
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 });
 
 // add new task
 $('#addListBtn').on('click', (function() {
-    var newTaskName = $('#addName').val(), newTaskDiscription = $('#addDiscription').val();
-    $('#addName, #addDiscription').val('');
+    var newTaskName = $('#addName').val(), newTaskDescription = $('#addDescription').val();
+    $('#addName, #addDescription').val('');
 
-    $('#allTask').prepend('<div id="containerList" class="col-md-4 col-sm-6">\n' +
-        '             <div id="taskList" class="activeTask">\n' +
-        '                 <div class="taskName"> <h3>'+ newTaskName +'</h3> </div>\n' +
-        '                 <div class="taskDiscription"> <p>'+ newTaskDiscription +'</p></div>\n' +
-        '                 <div class="rowBtn">\n' +
-        '                    <button id="edit">Edit</button>\n' +
-        '                    <button id="done">Done</button>\n' +
-        '                    <button id="remove" class="removeNotFinished">Remove</button>\n' +
-        '                 </div>\n' +
-        '             </div>\n' +
-        '         </div>');
-
-
+    $.ajax({
+        url: 'http://localhost:9999/api/tasks',
+        method: 'POST',
+        data: {
+            title: newTaskName,
+            description: newTaskDescription
+        },
+        success: function(response) {
+            console.log(response.task);
+            $('#allTask').prepend('<div id="'+ response.task.id + '" class="col-md-4 col-sm-6">\n' +
+                '             <div id="taskList" class="activeTask">\n' +
+                '                 <div class="taskName"> <h3>'+ newTaskName +'</h3> </div>\n' +
+                '                 <div class="taskDescription"> <p>'+ newTaskDescription +'</p></div>\n' +
+                '                 <div class="rowBtn">\n' +
+                '                    <button id="edit">Edit</button>\n' +
+                '                    <button id="done">Done</button>\n' +
+                '                    <button id="remove" class="removeNotFinished">Remove</button>\n' +
+                '                 </div>\n' +
+                '             </div>\n' +
+                '         </div>');
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 }));
 
 // done task
 $(document).on('click', '#done', (function () {
-   $(this).closest('#taskList').addClass('doneTask').removeClass('activeClass');
+    var taskTitle, taskDescription;
+    var elementId = $(this).parent().parent().parent()[0].id;
+    $.ajax({
+        url: 'http://localhost:9999/api/tasks/' + elementId,
+        method: 'GET',
+        success: function(response) {
+            taskTitle = response.task[title];
+            taskDescription = response.task.description;
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+    console.log(taskTitle);
+    $.ajax({
+        url: 'http://localhost:9999/api/tasks/' + elementId,
+        method: 'PUT',
+        data: {
+            title: taskTitle,
+            description: taskDescription,
+            taskStatus: 'Done'
+        },
+    success: function(response) {
+        console.log(response);
+    },
+    error: function(error) {
+        console.log(error);
+    }
+    });
+    $(this).closest('#taskList').addClass('doneTask').removeClass('activeClass');
     $(this).closest('#taskList').append('<div class="rowBtn">\n' +
-        '                 <button id="remove" class="removeFinished"><h1>Remove</h1></button>\n' +
-        '             </div>');
-   $(this).closest('.rowBtn').remove();
-
+         '                 <button id="remove" class="removeFinished"><h1>Remove</h1></button>\n' +
+         '             </div>');
+    $(this).closest('.rowBtn').remove();
 }));
 
 //remove task
 $(document).on('click', '#remove', (function () {
-    $(this).closest('#containerList').remove();
-}));
+    var elementId = $(this).parent().parent().parent()[0].id;
+    $(this).parent().parent().parent().remove();
+    $.ajax({
+        url: 'http://localhost:9999/api/tasks/' + elementId ,
+        method: 'DELETE',
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+ })
+);
 
-
-// trim() обрезает пробелы
+// добавить возможность редактирования
+// пофиксить ajax done
+// сделать ajax при редактировании
+// пофиксить input и areatext --- trim() обрезает пробелы с двух сторон
+// добавить подтверждение удаления задачи
+// сделать аккаунты пользователей*
