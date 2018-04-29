@@ -94,26 +94,14 @@ $('#addListBtn').on('click', (function() {
 
 // done task
 $(document).on('click', '#done', (function () {
-    var taskTitle, taskDescription;
     var elementId = $(this).parent().parent().parent()[0].id;
-    $.ajax({
-        url: 'http://localhost:9999/api/tasks/' + elementId,
-        method: 'GET',
-        success: function(response) {
-            taskTitle = response.task[title];
-            taskDescription = response.task.description;
-        },
-        error: function(error) {
-            console.log(error);
-        }
-    });
-    console.log(taskTitle);
+    console.log($(this).closest('#taskList').children('.taskName').children('h3').text());
     $.ajax({
         url: 'http://localhost:9999/api/tasks/' + elementId,
         method: 'PUT',
         data: {
-            title: taskTitle,
-            description: taskDescription,
+            title: $(this).closest('#taskList').children('.taskName').children('h3').text(),
+            description: $(this).closest('#taskList').children('.taskDescription').children('p').text(),
             taskStatus: 'Done'
         },
     success: function(response) {
@@ -147,9 +135,12 @@ $(document).on('click', '#remove', (function () {
  })
 );
 
+// добавить неизменяемый порядок листов
 // добавить возможность редактирования
-// пофиксить ajax done
 // сделать ajax при редактировании
 // пофиксить input и areatext --- trim() обрезает пробелы с двух сторон
 // добавить подтверждение удаления задачи
+// оформить ошибки
+// при отключенном сервере добавить мерцающий error
 // сделать аккаунты пользователей*
+// можете с server.js поиграться и подуиать как записывать данные**
