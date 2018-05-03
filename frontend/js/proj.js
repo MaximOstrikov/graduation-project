@@ -29,9 +29,9 @@ $(document).ready(function () {
 
     $('#addName').keyup(function(){
         if ($(this).val().trim().length !== 0) {
-            $('#addListBtn').attr('disabled', false);
+            $('#addListBtn').attr('disabled', false).addClass('addBtnActive').removeClass('addBtnDisabled');
         } else {
-            $('#addListBtn').attr('disabled', true);
+            $('#addListBtn').attr('disabled', true).addClass('addBtnDisabled').removeClass('addBtnActive');
         }
     });
 
@@ -109,57 +109,63 @@ $('#addListBtn').on('click', (function() {
 
 // edit task
 $(document).on('click', '#edit', (function () {
-    var elementId = $(this).parent().parent().parent()[0].id;
     var nameText = $(this).parent().siblings('.taskName').children().text();
     var descriptionText = $(this).parent().siblings('.taskDescription').children().text();
 
-    $(this).parent().siblings('.taskName').append('<input type="text" id="addName">');
     $(this).closest('.col-md-4').append('<div id="addList">\n' +
         '                 <div class="taskName"> <input type="text" id="editName" placeholder="Task Name" value="' + nameText + '"</div>\n' +
         '                 <div class="taskDescription"> <textarea  id="editDescription" cols="30" rows="10" placeholder="Description">' + descriptionText + '</textarea> </div>\n' +
-        '                 <button id="save">\n' +
+        '                 <button id="save" class="saveBtnActive">\n' +
         '                     <h1>Save</h1>\n' +
         '                 </button>\n' +
         '             </div>');
     $(this).closest('#taskList').remove();
-    $(this).remove();
 
-    $(document).on('click', '#save', (function () {
-        var editedNameText = $(this).siblings('#editName').val();
-        var editedDescriptionText = $(this).siblings('.taskDescription').children('#editDescription').val();
-        if (editedDescriptionText === '') {
-            editedDescriptionText = 'No description'
-        }
-
-        $(this).closest('.col-md-4').append('<div id="taskList" class="activeTask">\n' +
-            '                                 <div class="taskName"> <h3>' + editedNameText + '</h3> </div>\n' +
-            '                                 <div class="taskDescription"> <p>'+ editedDescriptionText +'</p></div>\n' +
-            '                                 <div class="rowBtn">\n' +
-            '                                    <button id="edit">Edit</button>\n' +
-            '                                    <button id="done">Done</button>\n' +
-            '                                    <button id="remove" class="removeNotFinished">Remove</button>\n' +
-            '                                 </div> \n' +
-            '                             </div> \n' +
-            '                         </div>');
-        $(this).closest('#addList').remove();
-
-        $.ajax({
-            url: 'http://localhost:9999/api/tasks/' + elementId,
-            method: 'PUT',
-            data: {
-                title: editedNameText,
-                description: editedDescriptionText,
-                taskStatus: 'New'
-    },
-        success: function(response) {
-            console.log(response);
-        },
-        error: function(error) {
-            console.log(error);
+    $("#editName").on("keyup", function () {
+        if ($(this).val() != "") {
+            $("#save").attr('disabled', false).removeClass('saveBtnDisabled').addClass('saveBtnActive');
+        } else {
+            $("#save").attr('disabled', true).removeClass('saveBtnActive').addClass('saveBtnDisabled');
         }
     });
 
-    }))
+}));
+
+$(document).on('click', '#save', (function () {
+    var elementId = $(this).parent().parent().parent()[0].id;
+    var editedNameText = $(this).siblings('#editName').val();
+    var editedDescriptionText = $(this).siblings('.taskDescription').children('#editDescription').text().trim();
+    if (editedDescriptionText === '') {
+        editedDescriptionText = 'No description'
+    }
+
+   $(this).closest('.col-md-4').append('<div id="taskList" class="activeTask">\n' +
+       '                                 <div class="taskName"> <h3>' + editedNameText + '</h3> </div>\n' +
+       '                                 <div class="taskDescription"> <p>'+ editedDescriptionText +'</p></div>\n' +
+       '                                 <div class="rowBtn">\n' +
+       '                                    <button id="edit">Edit</button>\n' +
+       '                                    <button id="done">Done</button>\n' +
+       '                                    <button id="remove" class="removeNotFinished">Remove</button>\n' +
+       '                                 </div> \n' +
+       '                             </div> \n' +
+       '                         </div>');
+   $(this).closest('#addList').remove();
+
+   $.ajax({
+       url: 'http://localhost:9999/api/tasks/' + elementId,
+       method: 'PUT',
+       data: {
+           title: editedNameText,
+           description: editedDescriptionText,
+           taskStatus: 'New'
+       },
+       success: function(response) {
+           console.log(response);
+       },
+       error: function(error) {
+           console.log(error);
+       }
+   });
 }));
 
 // done task
@@ -187,25 +193,29 @@ $(document).on('click', '#done', (function () {
     $(this).closest('.rowBtn').remove();
 }));
 
-//remove task
+//remove task ToDo
 $(document).on('click', '#remove', (function () {
-        var elementId = $(this).parent().parent().parent()[0].id;
-        $(this).parent().parent().parent().remove();
-        $.ajax({
-            url: 'http://localhost:9999/api/tasks/' + elementId ,
-            method: 'DELETE',
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
+    alert('Use double click')
+}));
+
+$(document).on('dblclick', '#remove', (function () {
+        if (confirm('Вы уверены?')) {
+            var elementId = $(this).parent().parent().parent()[0].id;
+            $(this).parent().parent().parent().remove();
+            $.ajax({
+                url: 'http://localhost:9999/api/tasks/' + elementId,
+                method: 'DELETE',
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
     })
 );
 
-// при добавлении задачи поля заголовка и описания отчистить
-// задизэйблить кнопки
 // добавить неизменяемый порядок листов
 // пофиксить input trim() обрезает пробелы с двух сторон
 // добавить подтверждение удаления задачи

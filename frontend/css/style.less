@@ -161,10 +161,8 @@ body,html {
             text-align: center;
             color: #555;
             outline: none;
-            #save {
-                #addListBtn()
-            }
-            #addListBtn {
+
+            .saveBtnActive {
                 width: 240px;
                 height: 40px;
                 border-radius: 30px;
@@ -178,7 +176,39 @@ body,html {
                     color: @allBtnColor;
                     border: 2px solid @allBtnColor;
                 }
-
+            }
+            .saveBtnDisabled {
+                width: 240px;
+                height: 40px;
+                border-radius: 30px;
+                margin: 5px 0 0 0;
+                color: #444444;
+                background: #a5a5a5a5;
+                border: 2px solid rgba(146, 146, 146, 0.65);
+            }
+            .addBtnDisabled {
+                width: 240px;
+                height: 40px;
+                border-radius: 30px;
+                margin: 5px 0 0 0;
+                color: #444444;
+                background: #a5a5a5a5;
+                border: 2px solid rgba(146, 146, 146, 0.65);
+            }
+            .addBtnActive {
+                width: 240px;
+                height: 40px;
+                border-radius: 30px;
+                margin: 5px 0 0 0;
+                color: #bebebe;
+                background: @allBtnColor;
+                border: 2px solid #4da5c8;
+                outline: none;
+                &:hover {
+                    background: #4da5c8;
+                    color: @allBtnColor;
+                    border: 2px solid @allBtnColor;
+                }
             }
             .taskName {
                 input {
@@ -194,7 +224,6 @@ body,html {
                 }
             }
         }
-
     }
 }
 
