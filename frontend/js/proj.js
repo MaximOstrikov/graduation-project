@@ -1,29 +1,43 @@
-var editChecker = 0;
+var errorChecker = 0;
+// greeting
+function greeting() {
+    setTimeout(function () {
+        $('#welcome').animate({opacity: 1}, {duration: 1000}).fadeOut(2000, function () {
+            $(this).remove()
+        });
+    }, 300);
+    setTimeout(function () {
+        if (errorChecker === 0) {
+            sliderBackgroundBody();
+            setTimeout(function() {
+                $('#task').animate({opacity: 1}, {duration: 1000}).removeClass('displayNone')
+            }, 1000)
+        } else {
+            setTimeout(function() {
+                errorMessage();
+            }, 1000)
+        }
+    }, 2600)
+}
+
 // background slider
-var welcomeChecker = 1;
 function sliderBackgroundBody() {
-    if (welcomeChecker === 1) {
-        setTimeout(function () {
-            $('#welcome').animate({opacity: 1}, {duration: 1000}).fadeOut(2000, function () {
-                $(this).remove()
-            });
-            welcomeChecker++;
-            setTimeout(sliderBackgroundBody, 2200);
-        }, 300);
-        setTimeout(function () {
-            $('#task').animate({opacity: 1}, {duration: 1000}).removeClass('displayNone');
-        }, 3600)
-    } else {
         window.currBg = window.currBg + 1;
         if (!window.currBg || window.currBg > 8) window.currBg = 1;
         $('#bgimg').fadeOut(1000, function () {
             $(this).css('background-image', 'url("./img/background/' + window.currBg + '.jpg")').fadeIn(1000);
         });
         setTimeout(sliderBackgroundBody, 15000);
-    }
 }
+
+// error meaasage
+function errorMessage() {
+    $('#lostConnection').animate({opacity: 1}, {duration: 1000}).fadeOut(2000).fadeIn(2000);
+    errorMessage()
+}
+
 $(document).ready(function () {
-    sliderBackgroundBody();
+    greeting();
 
     $('#addListBtn').attr('disabled',true);
 
@@ -36,17 +50,21 @@ $(document).ready(function () {
     });
 
     // loading tasks
+    loadingTask()
+});
+
+function loadingTask() {
     $.ajax({
         url: 'http://localhost:9999/api/tasks',
         method: 'GET',
-        success: function(response) {
-            for (var i = 0; i<response.tasks.length; i++){
+        success: function (response) {
+            for (var i = 0; i < response.tasks.length; i++) {
                 (response.tasks[i].taskStatus === 'New') ? (taskChecker = 0) : (taskChecker = 1);
                 (taskChecker === 0) ? (listStyle = 'activeTask',
-                    $('#allTask').prepend('<div id="'+response.tasks[i].id +'" class="col-md-4 col-sm-6">\n' +
-                        '             <div id="taskList" class="'+ listStyle +'">\n' +
-                        '                 <div class="taskName"> <h3>'+response.tasks[i].title+'</h3> </div>\n' +
-                        '                 <div class="taskDescription"> <p>'+response.tasks[i].description+'</p></div>\n' +
+                    $('#allTask').prepend('<div id="' + response.tasks[i].id + '" class="col-md-4 col-sm-6">\n' +
+                        '             <div id="taskList" class="' + listStyle + '">\n' +
+                        '                 <div class="taskName"> <h3>' + response.tasks[i].title + '</h3> </div>\n' +
+                        '                 <div class="taskDescription"> <p>' + response.tasks[i].description + '</p></div>\n' +
                         '                 <div class="rowBtn">\n' +
                         '                    <button id="edit">Edit</button>\n' +
                         '                    <button id="done">Done</button>\n' +
@@ -54,10 +72,10 @@ $(document).ready(function () {
                         '                 </div>\n' +
                         '             </div>\n' +
                         '         </div>')) : (listStyle = 'doneTask',
-                    $('#allTask').prepend('<div id="'+response.tasks[i].id +'" class="col-md-4 col-sm-6">\n' +
-                        '             <div id="taskList" class="'+ listStyle +'">\n' +
-                        '                 <div class="taskName"> <h3>'+response.tasks[i].title+'</h3> </div>\n' +
-                        '                 <div class="taskDescription"> <p>'+response.tasks[i].description+'</p></div>\n' +
+                    $('#allTask').prepend('<div id="' + response.tasks[i].id + '" class="col-md-4 col-sm-6">\n' +
+                        '             <div id="taskList" class="' + listStyle + '">\n' +
+                        '                 <div class="taskName"> <h3>' + response.tasks[i].title + '</h3> </div>\n' +
+                        '                 <div class="taskDescription"> <p>' + response.tasks[i].description + '</p></div>\n' +
                         '                 <div class="rowBtn">\n' +
                         '                    <button id="remove" class="removeFinished"><h1>Remove</h1></button>\n' +
                         '                </div>\n' +
@@ -65,11 +83,12 @@ $(document).ready(function () {
                         '         </div>'));
             }
         },
-        error: function(error) {
+        error: function (error) {
             console.log(error);
+            errorChecker++;
         }
     });
-});
+}
 
 // add new task
 $('#addListBtn').on('click', (function() {
@@ -79,6 +98,7 @@ $('#addListBtn').on('click', (function() {
     }
     $('#addName').val('');
     $('#addDescription').val('');
+    $('#addName').trigger('keyup');
 
     $.ajax({
         url: 'http://localhost:9999/api/tasks',
@@ -193,13 +213,9 @@ $(document).on('click', '#done', (function () {
     $(this).closest('.rowBtn').remove();
 }));
 
-//remove task ToDo
+//remove task
 $(document).on('click', '#remove', (function () {
-    alert('Use double click')
-}));
-
-$(document).on('dblclick', '#remove', (function () {
-        if (confirm('Вы уверены?')) {
+        if (confirm('Are you sure you want to delete the task?')) {
             var elementId = $(this).parent().parent().parent()[0].id;
             $(this).parent().parent().parent().remove();
             $.ajax({
@@ -217,9 +233,5 @@ $(document).on('dblclick', '#remove', (function () {
 );
 
 // добавить неизменяемый порядок листов
-// пофиксить input trim() обрезает пробелы с двух сторон
-// добавить подтверждение удаления задачи
-// оформить ошибки
-// при отключенном сервере добавить мерцающий error
 // сделать аккаунты пользователей*
 // подумать как записывать данные на сервер**

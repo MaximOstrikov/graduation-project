@@ -9,6 +9,9 @@
 @removeBtnHover: rgb(220, 65, 38);
 @disabledColor: @taskColor;
 
+::selection {
+  background: rgba(44, 194, 189, 0.61);
+}
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -48,6 +51,20 @@ body,html {
         font-family: 'Arapey', serif;
         color: rgba(172, 243, 230, 0.82);
     }
+    #lostConnection {
+      position: absolute;
+      width: 40%;
+      height: auto;
+      top: 45%;
+      left: 30%;
+      background: #343434;
+      border-radius: 50px;
+      text-align: center;
+      font-size: 55px;
+      font-family: 'Arapey', serif;
+      color: rgba(172, 243, 230, 0.82);
+    }
+
 
     #bgimg {
         position: fixed;
