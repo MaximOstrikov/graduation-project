@@ -1,4 +1,6 @@
 var errorChecker = 0;
+var doneTaskQuantity = 0;
+var allTaskQuantity = 0;
 // greeting
 function greeting() {
     setTimeout(function () {
@@ -10,7 +12,8 @@ function greeting() {
         if (errorChecker === 0) {
             sliderBackgroundBody();
             setTimeout(function() {
-                $('#task').animate({opacity: 1}, {duration: 1000}).removeClass('displayNone')
+                $('#task').animate({opacity: 1}, {duration: 1000}).removeClass('displayNone');
+                $('#taskCounter').animate({opacity: 1}, {duration: 1000}).removeClass('displayNone')
             }, 1000)
         } else {
             setTimeout(function() {
@@ -52,12 +55,19 @@ $(document).ready(function () {
     // loading tasks
     loadingTask()
 });
-
+function counter() {
+    if (allTaskQuantity === 0) {
+        $('#taskCounter').children().text('There are no planned items yet');
+    } else {
+        $('#taskCounter').children().text('There are '+ doneTaskQuantity +' of '+ allTaskQuantity +' items done');
+    }
+}
 function loadingTask() {
     $.ajax({
         url: 'http://localhost:9999/api/tasks',
         method: 'GET',
         success: function (response) {
+            allTaskQuantity = response.tasks.length;
             for (var i = 0; i < response.tasks.length; i++) {
                 (response.tasks[i].taskStatus === 'New') ? (taskChecker = 0) : (taskChecker = 1);
                 (taskChecker === 0) ? (listStyle = 'activeTask',
@@ -71,7 +81,7 @@ function loadingTask() {
                         '                    <button id="remove" class="removeNotFinished">Remove</button>\n' +
                         '                 </div>\n' +
                         '             </div>\n' +
-                        '         </div>')) : (listStyle = 'doneTask',
+                        '         </div>')) : (doneTaskQuantity++, listStyle = 'doneTask',
                     $('#allTask').prepend('<div id="' + response.tasks[i].id + '" class="col-md-4 col-sm-6">\n' +
                         '             <div id="taskList" class="' + listStyle + '">\n' +
                         '                 <div class="taskName"> <h3>' + response.tasks[i].title + '</h3> </div>\n' +
@@ -80,8 +90,9 @@ function loadingTask() {
                         '                    <button id="remove" class="removeFinished"><h1>Remove</h1></button>\n' +
                         '                </div>\n' +
                         '             </div>\n' +
-                        '         </div>'));
+                        '         </div>'))
             }
+            counter();
         },
         error: function (error) {
             console.log(error);
@@ -89,7 +100,6 @@ function loadingTask() {
         }
     });
 }
-
 // add new task
 $('#addListBtn').on('click', (function() {
     var newTaskName = $('#addName').val().trim(), newTaskDescription = $('#addDescription').val().trim();
@@ -99,6 +109,8 @@ $('#addListBtn').on('click', (function() {
     $('#addName').val('');
     $('#addDescription').val('');
     $('#addName').trigger('keyup');
+    allTaskQuantity++
+    counter();
 
     $.ajax({
         url: 'http://localhost:9999/api/tasks',
@@ -131,7 +143,6 @@ $('#addListBtn').on('click', (function() {
 $(document).on('click', '#edit', (function () {
     var nameText = $(this).parent().siblings('.taskName').children().text();
     var descriptionText = $(this).parent().siblings('.taskDescription').children().text();
-
     $(this).closest('.col-md-4').append('<div id="addList">\n' +
         '                 <div class="taskName"> <input type="text" id="editName" placeholder="Task Name" value="' + nameText + '"</div>\n' +
         '                 <div class="taskDescription"> <textarea  id="editDescription" cols="30" rows="10" placeholder="Description">' + descriptionText + '</textarea> </div>\n' +
@@ -153,12 +164,11 @@ $(document).on('click', '#edit', (function () {
 
 $(document).on('click', '#save', (function () {
     var elementId = $(this).parent().parent().parent()[0].id;
-    var editedNameText = $(this).siblings('#editName').val();
-    var editedDescriptionText = $(this).siblings('.taskDescription').children('#editDescription').text().trim();
+    var editedNameText = $(this).siblings().val();
+    var editedDescriptionText = $(this).siblings('.taskDescription').children().val();
     if (editedDescriptionText === '') {
         editedDescriptionText = 'No description'
     }
-
    $(this).closest('.col-md-4').append('<div id="taskList" class="activeTask">\n' +
        '                                 <div class="taskName"> <h3>' + editedNameText + '</h3> </div>\n' +
        '                                 <div class="taskDescription"> <p>'+ editedDescriptionText +'</p></div>\n' +
@@ -191,6 +201,8 @@ $(document).on('click', '#save', (function () {
 // done task
 $(document).on('click', '#done', (function () {
     var elementId = $(this).parent().parent().parent()[0].id;
+    doneTaskQuantity++
+    counter();
     $.ajax({
         url: 'http://localhost:9999/api/tasks/' + elementId,
         method: 'PUT',
@@ -215,23 +227,38 @@ $(document).on('click', '#done', (function () {
 
 //remove task
 $(document).on('click', '#remove', (function () {
+
         if (confirm('Are you sure you want to delete the task?')) {
             var elementId = $(this).parent().parent().parent()[0].id;
-            $(this).parent().parent().parent().remove();
+
+            $.ajax({
+                url: 'http://localhost:9999/api/tasks/' + elementId,
+                method: 'GET',
+                success: function(response) {
+                    debugger;
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
             $.ajax({
                 url: 'http://localhost:9999/api/tasks/' + elementId,
                 method: 'DELETE',
                 success: function (response) {
-                    console.log(response);
                 },
                 error: function (error) {
                     console.log(error);
                 }
             });
+
+            counter()
+            // $(this).parent().parent().parent().remove();
         }
     })
 );
-
+// редактирование descriptions
+// добавить счетчик заданий
 // добавить неизменяемый порядок листов
 // сделать аккаунты пользователей*
 // подумать как записывать данные на сервер**

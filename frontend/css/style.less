@@ -38,6 +38,23 @@ body,html {
         text-align: center;
         font-size: 20px;
     }
+    #taskCounter {
+        background: @taskColor;
+        width: 200px;
+        height: 90px;
+        padding: 20px 20px 0 10px;
+        border-radius: 0 10px 10px 0;
+        border-top: 5px solid #777;
+        border-right: 30px solid @trackColor;
+        border-bottom: 5px solid #777;
+        position: fixed;
+        top: 25px;
+        left: -170px;
+        transition: left 0.5s ease;
+        &:hover {
+            left: 0;
+        }
+    }
     #welcome {
         position: absolute;
         width: 20%;
@@ -52,17 +69,17 @@ body,html {
         color: rgba(172, 243, 230, 0.82);
     }
     #lostConnection {
-      position: absolute;
-      width: 40%;
-      height: auto;
-      top: 45%;
-      left: 30%;
-      background: #343434;
-      border-radius: 50px;
-      text-align: center;
-      font-size: 55px;
-      font-family: 'Arapey', serif;
-      color: rgba(172, 243, 230, 0.82);
+        position: absolute;
+        width: 40%;
+        height: auto;
+        top: 45%;
+        left: 30%;
+        background: #343434;
+        border-radius: 50px;
+        text-align: center;
+        font-size: 55px;
+        font-family: 'Arapey', serif;
+        color: rgba(172, 243, 230, 0.82);
     }
 
 
@@ -126,6 +143,7 @@ body,html {
                 outline: none;
                 color: #bebebe;
                 background: @allBtnColor;
+                transition: all 0.25s ease;
                 &:hover {
                     color: @allBtnColor;
                     border: 2px solid @allBtnColor;
@@ -139,6 +157,7 @@ body,html {
                 background: @allBtnColor;
                 margin: 0 0 0 7px;
                 border: 2px solid @removeBtnHover;
+                transition: all 0.25s ease;
                 &:hover {
                     color: @allBtnColor;
                     background: @removeBtnHover;
@@ -188,6 +207,7 @@ body,html {
                 background: @allBtnColor;
                 border: 2px solid #4da5c8;
                 outline: none;
+                transition: all 0.25s ease;
                 &:hover {
                     background: #4da5c8;
                     color: @allBtnColor;
@@ -202,6 +222,7 @@ body,html {
                 color: #444444;
                 background: #a5a5a5a5;
                 border: 2px solid rgba(146, 146, 146, 0.65);
+                transition: all 0.25s ease;
             }
             .addBtnDisabled {
                 width: 240px;
@@ -211,6 +232,7 @@ body,html {
                 color: #444444;
                 background: #a5a5a5a5;
                 border: 2px solid rgba(146, 146, 146, 0.65);
+                transition: all 0.25s ease;
             }
             .addBtnActive {
                 width: 240px;
@@ -221,6 +243,7 @@ body,html {
                 background: @allBtnColor;
                 border: 2px solid #4da5c8;
                 outline: none;
+                transition: all 0.25s ease;
                 &:hover {
                     background: #4da5c8;
                     color: @allBtnColor;
