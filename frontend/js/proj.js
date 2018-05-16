@@ -229,36 +229,46 @@ $(document).on('click', '#done', (function () {
 $(document).on('click', '#remove', (function () {
 
         if (confirm('Are you sure you want to delete the task?')) {
-            var elementId = $(this).parent().parent().parent()[0].id;
+            var elementId = $(this).parent().parent().parent()[0].id, taskStat = 0;
 
-            $.ajax({
-                url: 'http://localhost:9999/api/tasks/' + elementId,
-                method: 'GET',
-                success: function(response) {
-                    debugger;
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-            });
+                $.ajax({
+                    url: 'http://localhost:9999/api/tasks',
+                    method: 'GET',
+                    success: function(response) {
+                        for (var i = 0; i < response.tasks.length; i++) {
+                            if (response.tasks[i].id === elementId) {
+                                if (response.tasks[i].taskStatus == "Done") {
+                                    taskStat = 1
+                                } else {
+                                    taskStat = 0
+                                }
+                            }
+                        }
+                        if (taskStat == 0) {
+                            allTaskQuantity--
+                        } else {
+                            allTaskQuantity--;
+                            doneTaskQuantity--;
+                        }
+                        counter();
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
 
             $.ajax({
                 url: 'http://localhost:9999/api/tasks/' + elementId,
                 method: 'DELETE',
                 success: function (response) {
+                    console.log(response)
                 },
                 error: function (error) {
                     console.log(error);
                 }
             });
 
-            counter()
-            // $(this).parent().parent().parent().remove();
+             $(this).parent().parent().parent().remove();
         }
     })
 );
-// редактирование descriptions
-// добавить счетчик заданий
-// добавить неизменяемый порядок листов
-// сделать аккаунты пользователей*
-// подумать как записывать данные на сервер**
