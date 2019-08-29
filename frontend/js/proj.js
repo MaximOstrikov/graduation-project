@@ -30,7 +30,7 @@ function sliderBackgroundBody() {
         $('#bgimg').fadeOut(1000, function () {
             $(this).css('background-image', 'url("./img/background/' + window.currBg + '.jpg")').fadeIn(1000);
         });
-        setTimeout(sliderBackgroundBody, 15000);
+        setTimeout(sliderBackgroundBody, 10000);
 }
 
 // error meaasage
